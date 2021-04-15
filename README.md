@@ -1,1 +1,1 @@
-# Algorytm-k-najblizszych-sasiadow
+# K-means-Algorithm
