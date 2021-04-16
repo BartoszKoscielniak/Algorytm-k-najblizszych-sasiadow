@@ -1,1 +1,1 @@
-# K-means-Algorithm
+# K-Nearest-Nighbor-Algorithm 
