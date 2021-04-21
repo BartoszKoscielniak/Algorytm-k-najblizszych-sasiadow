@@ -1,30 +1,31 @@
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvException;
+
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class Main {
 
     public static void main(String[] args) {
 
         Double[][] war = new Double[0][];
-        Double[] testObject;
+        Double[][] testObject = new Double[0][];
         Double[] distance;
         String[] dec = new String[0];
         String[] strk = new String[0];
+        String[] tempDec = new String[0];
+        ArrayList<String> uniqueDec = new ArrayList<String>();
         int decisionCounter = 0;
         int[] intk;
         int warCols = 0;
         int rows = 0;
         int decIndex = 0;
-        int k = 25;
+        int k = 7;
 
-
-        try(CSVReader csvReader = new CSVReader(new FileReader("src\\main\\resources\\iris.csv"))) {
+        try(CSVReader csvReader = new CSVReader(new FileReader("src\\main\\resources\\ecoli_trening.csv"))) {
             List<String[]> array = csvReader.readAll();
-            //r.forEach(x -> System.out.println(Arrays.toString(x)));
 
             while(rows < array.get(0).length){
                 for(int i = 0; i < array.get(0)[rows].length(); i++){
@@ -48,14 +49,15 @@ public class Main {
                         war[i][x] = Double.parseDouble(array.get(i)[x]);
                     }else{
                         dec[i] = array.get(i)[x];
-                        if(i >= 1 && !(dec[i - 1].equals(dec[i]))){
+                        if(i >= 1 && !uniqueDec.contains(dec[i])){
+                            uniqueDec.add(dec[i]);
                             decisionCounter++;
                         }
                     }
                 }
             }
-            decisionCounter++;
-
+            /*
+            System.out.println(decisionCounter);
             //dodanie elementow do tablicy strk
             strk = new String[decisionCounter];
             strk[0] = dec[0];
@@ -66,60 +68,75 @@ public class Main {
                     temp++;
                 }
             }
+            */
+        } catch (IOException | CsvException e) {
+            e.printStackTrace();
+        }
+
+        try(CSVReader csvReader = new CSVReader(new FileReader("src\\main\\resources\\ecoli_test.csv"))){
+            List<String[]> arrayS = csvReader.readAll();
+            testObject = new Double[arrayS.size()][arrayS.get(0).length];
+
+            for(int i = 0; i < arrayS.size(); i++){
+                for(int x = 0; x < arrayS.get(i).length ; x++){
+                    testObject[i][x] = Double.parseDouble(arrayS.get(i)[x]);
+                }
+            }
 
         } catch (IOException | CsvException e) {
             e.printStackTrace();
         }
 
-        //wprowadzenie obiektu testowego
-        System.out.print("Obiekt testowy: ");
-        testObject = new Double[warCols];
-        Random random = new Random();
-        for(int i = 0; i < war[0].length; i++){
-            testObject[i] = 1.0 + (7.5 - 1.0) * random.nextDouble();
-            System.out.print(testObject[i] + ", ");
-        }
-        System.out.print("Nalezy do centrum: ");
+        for (int y = 0; y < testObject.length; y++) {
+            distance = new Double[war.length];
+            for (int i = 0; i < war.length; i++) {
+                for (int x = 0; x < war[i].length; x++) {
+                    distance[i] =+ Math.pow((war[i][x] - testObject[y][x]), 2);
+                }
+                distance[i] = Math.sqrt(distance[i]);
+            }
 
-        distance = new Double[rows];
-        for(int i = 0; i < war.length; i++){
-            distance[i] = Math.sqrt(Math.pow((war[i][0] - testObject[0]),2) + Math.pow((war[i][1] - testObject[1]),2) + Math.pow((war[i][2] - testObject[2]),2) + Math.pow((war[i][3] - testObject[3]),2));
-        }
+            tempDec = dec;
+            for( int i = 0; i < distance.length; i++ ) {
+                for( int j = 0; j < distance.length - 1; j++ ) {
+                    if( distance[ j ] > distance[ j + 1 ] ) {
 
-        //sortowanie
-        int min;
-        double tempD;
-        String tempS;
-        for(int j = 0; j < distance.length - 1; j++) {
-            min = j;
-            for(int i = j + 1; i < distance.length; i++) {
-                if (distance[i] < distance[min]) {
-                    min = i;
-                    tempD = distance[min];
-                    distance[min] = distance[j];
-                    distance[j] = tempD;
-                    tempS = dec[min];
-                    dec[min] = dec[j];
-                    dec[j] = tempS;
+                        double temp = distance[j];
+                        distance[j] = distance[j + 1];
+                        distance[j+1] = temp;
+
+                        String temps = tempDec[j];
+                        tempDec[j] = tempDec[j + 1];
+                        tempDec[j + 1] = temps;
+                    }
                 }
             }
-        }
 
-        //punkt 10
-        intk = new int[decisionCounter];
-        for(int i = 0; i < k; i++){
-            for(int j = 0; j < strk.length; j++){
-                if(strk[j].equals(dec[i])) intk[j]++;
+            for(int i = 0; i < distance.length; i++){
+                //System.out.println("index:" + y + " " + "index distance:" + i + " " + distance[i]);
             }
+
+            intk = new int[decisionCounter];
+            for(int i = 0; i < k; i++){
+               for(int x = 0; x < uniqueDec.size(); x++){
+                   if(uniqueDec.get(x).equals(tempDec[i])) intk[x]++;
+               }
+            }
+
+            //punkt 11
+            int max = 0;
+            int index = 0;
+            for(int i = 0; i < intk.length; i++){
+                if(intk[i] > max){
+                    max = intk[i];
+                    index = i;
+                }
+            }
+
+            System.out.println("index: " + y + " " + testObject[y][0] + " " + uniqueDec.get(index));
+
         }
 
-        //punkt 11
-        int max = 0;
-        int index = 0;
-        for(int i = 0; i < intk.length; i++){
-            if(intk[i] > max) index = i;
-        }
-
-        System.out.println(strk[index]);
+        //TODO: czas dzialania programu liczenie
     }
 }
