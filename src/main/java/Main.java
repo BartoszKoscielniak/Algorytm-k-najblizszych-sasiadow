@@ -10,20 +10,22 @@ public class Main {
 
     public static void main(String[] args) {
 
+        double startTime = System.nanoTime();
+
         Double[][] war = new Double[0][];
         Double[][] testObject = new Double[0][];
         Double[] distance;
         String[] dec = new String[0];
-        String[] strk = new String[0];
-        String[] tempDec = new String[0];
-        ArrayList<String> uniqueDec = new ArrayList<String>();
+        ArrayList<String> uniqueDec = new ArrayList<>();
         int decisionCounter = 0;
         int[] intk;
         int warCols = 0;
         int rows = 0;
         int decIndex = 0;
-        int k = 5;
 
+        ////////////ZMIANA K////////////
+        int k = 7;
+        ////////////ZMIANA OBIEKTU TRENINGOWEGO////////////
         try(CSVReader csvReader = new CSVReader(new FileReader("src\\main\\resources\\iris_trening.csv"))) {
             List<String[]> array = csvReader.readAll();
 
@@ -60,7 +62,7 @@ public class Main {
         } catch (IOException | CsvException e) {
             e.printStackTrace();
         }
-
+        ////////////ZMIANA OBIEKTU TESTOWEGO////////////
         try(CSVReader csvReader = new CSVReader(new FileReader("src\\main\\resources\\iris_test.csv"))){
             List<String[]> arrayS = csvReader.readAll();
             testObject = new Double[arrayS.size()][arrayS.get(0).length];
@@ -75,9 +77,16 @@ public class Main {
             e.printStackTrace();
         }
 
+        String[] tempDec = new String[dec.length];
+
         for (int y = 0; y < testObject.length; y++) {
             distance = new Double[war.length];
-            tempDec = dec;
+
+
+            for (int o = 0; o < dec.length; o++){
+                tempDec[o] = dec[o];
+            }
+
             for (int i = 0; i < war.length; i++) {
                 for (int x = 0; x < war[i].length; x++) {
                     distance[i] =+ Math.pow((war[i][x] - testObject[y][x]), 2);
@@ -110,7 +119,6 @@ public class Main {
                }
             }
 
-            //punkt 11
             int max = 0;
             int index = 0;
             for(int i = 0; i < intk.length; i++){
@@ -120,16 +128,15 @@ public class Main {
                 }
             }
 
-           // System.out.println("Obiekt: " + y);
-            for(int i = 0; i < intk.length; i++){
-                //System.out.println(uniqueDec.get(i) + " " + intk[i]);
+            for (int q = 0; q < testObject[y].length; q++){
+                System.out.print(testObject[y][q] + ", ");
             }
-
-            //break;
-            System.out.println("index: " + (y + 1) + " " + testObject[y][0] + " " + uniqueDec.get(index));
+            System.out.println(uniqueDec.get(index));
 
         }
-        //TODO: czas dzialania programu liczenie
+
+        double elapsedTime = System.nanoTime() - startTime;
+        System.out.println("Wykonanie programu zajelo: " + elapsedTime/1000000000 + " sekundy");
     }
 
 }
