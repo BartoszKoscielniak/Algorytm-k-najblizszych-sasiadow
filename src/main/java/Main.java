@@ -81,17 +81,16 @@ public class Main {
 
         for (int y = 0; y < testObject.length; y++) {
             distance = new Double[war.length];
-
-
             for (int o = 0; o < dec.length; o++){
                 tempDec[o] = dec[o];
             }
 
             for (int i = 0; i < war.length; i++) {
+                double result = 0;
                 for (int x = 0; x < war[i].length; x++) {
-                    distance[i] =+ Math.pow((war[i][x] - testObject[y][x]), 2);
+                    result = result + Math.pow((war[i][x] - testObject[y][x]), 2);
                 }
-                distance[i] = Math.sqrt(distance[i]);
+                distance[i] = Math.sqrt(result);
             }
 
             for( int i = 0; i < distance.length; i++ ) {
@@ -107,6 +106,10 @@ public class Main {
                         tempDec[j + 1] = temps;
                     }
                 }
+            }
+
+            for (int o = 0; o < dec.length; o++){
+                //System.out.println();
             }
 
             intk = new int[uniqueDec.size()];
@@ -127,7 +130,7 @@ public class Main {
                     index = i;
                 }
             }
-
+            System.out.print("index: " + (y + 1) + " ");
             for (int q = 0; q < testObject[y].length; q++){
                 System.out.print(testObject[y][q] + ", ");
             }
