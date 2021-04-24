@@ -88,7 +88,7 @@ public class Main {
             for (int i = 0; i < war.length; i++) {
                 double result = 0;
                 for (int x = 0; x < war[i].length; x++) {
-                    result = result + Math.pow((war[i][x] - testObject[y][x]), 2);
+                    result += Math.pow((war[i][x] - testObject[y][x]), 2);
                 }
                 distance[i] = Math.sqrt(result);
             }
