@@ -130,7 +130,7 @@ public class Main {
                     index = i;
                 }
             }
-            System.out.print("index: " + (y + 1) + " ");
+
             for (int q = 0; q < testObject[y].length; q++){
                 System.out.print(testObject[y][q] + ", ");
             }
